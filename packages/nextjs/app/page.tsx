@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
+import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
@@ -13,87 +13,150 @@ const Home: NextPage = () => {
   return (
     <>
       <div className="flex items-center flex-col grow pt-10">
-        <div className="px-5">
+        <div className="px-5 max-w-4xl">
+          {/* HEADER */}
           <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-            <span className="block text-xl font-bold">(SpeedRunEthereum Challenge: Dice game extension)</span>
+            <span className="block text-2xl mb-2">SpeedRunEthereum</span>
+            <span className="block text-4xl font-bold">Challenge 03 — 🎲 Dice Game</span>
+            <span className="block text-lg mt-2">
+              Predict the “randomness” and attack the vulnerable dice roll logic.
+            </span>
           </h1>
-          <div className="flex justify-center items-center space-x-2 flex-col">
-            <p className="my-2 font-medium">Connected Address:</p>
+
+          {/* CONNECTED WALLET */}
+          <div className="flex justify-center items-center space-x-2 flex-col mt-6">
+            <p className="my-2 font-medium text-lg">Connected Wallet:</p>
             <Address address={connectedAddress} />
           </div>
 
-          <div className="flex items-center flex-col flex-grow pt-10">
-            <div className="px-5">
-              <h1 className="text-center mb-6">
-                <span className="block text-2xl mb-2">SpeedRunEthereum</span>
-                <span className="block text-4xl font-bold">Challenge: 🎲 Dice Game</span>
-              </h1>
-              <div className="flex flex-col items-center justify-center">
-                <Image
-                  src="/hero.png"
-                  width="727"
-                  height="231"
-                  alt="challenge banner"
-                  className="rounded-xl border-4 border-primary"
-                />
-                <div className="max-w-3xl">
-                  <p className="text-lg mt-10">
-                    🎰 Randomness is tricky on a public deterministic blockchain. The block hash is an easy to use, but
-                    very weak form of randomness. This challenge will give you an example of a contract using block hash
-                    to create random numbers. This randomness is exploitable. Other, stronger forms of randomness
-                    include commit/reveal schemes, oracles, or VRF from Chainlink. the Ethereum protocol!
-                  </p>
-                  <p className="text-lg mt-2">👍 One day soon, randomness will be built into the Ethereum protocol!</p>
-                  <p className="text-lg mt-2">
-                    🧤 Every time a player rolls the dice, they are required to send .002 Eth. 40 percent of this value
-                    is added to the current prize amount while the other 60 percent stays in the contract to fund future
-                    prizes. Once a prize is won, the new prize amount is set to 10% of the total balance of the DiceGame
-                    contract.
-                  </p>
-                  <p className="text-lg mt-2">
-                    🧨 Your job is to attack the Dice Game contract! You will create a new contract that will predict
-                    the randomness ahead of time and only roll the dice when you′re guaranteed to be a winner!
-                  </p>
-                  <p className="text-lg mt-2">
-                    💬 Meet other builders working on this challenge and get help in the{" "}
-                    <a href="https://t.me/+3StA0aBSArFjNjUx" target="_blank" rel="noreferrer" className="underline">
-                      Telegram Group
-                    </a>
-                  </p>
-                  <p className="text-center text-lg">
-                    <a href="https://speedrunethereum.com/" target="_blank" rel="noreferrer" className="underline">
-                      SpeedRunEthereum.com
-                    </a>
-                    !
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* HERO IMAGE */}
+          <div className="flex flex-col items-center justify-center mt-10">
+            <Image
+              src="/hero.png"
+              width="727"
+              height="231"
+              alt="Challenge banner"
+              className="rounded-xl border-4 border-primary"
+            />
           </div>
+
+          {/* CONTENT */}
+          <div className="mt-10 space-y-6 text-lg">
+            <p>
+              🎰 <strong>Randomness on-chain is hard. </strong>  
+              Public blockchains are deterministic — meaning anyone can predict values ahead of time if randomness is not handled securely.
+            </p>
+
+            <p>
+              In this challenge, the <strong>DiceGame contract uses a weak randomness source</strong>:
+            </p>
+
+            <pre className="bg-base-200 p-4 rounded-xl overflow-auto text-sm">
+{`roll = uint256(
+    keccak256(abi.encodePacked(prevBlockHash, contractAddress, nonce))
+) % 16;`}
+            </pre>
+
+            <p>
+              This allows an attacker to compute the exact same hash <strong>off-chain or inside another contract </strong> 
+              and only roll the dice when they are guaranteed to win.
+            </p>
+
+            <p>
+              💰 Players send <strong>0.002 ETH</strong> to roll.  
+              40% goes to the prize pool.  
+              60% stays in the contract to sustain future payouts.
+            </p>
+
+            <p>
+              🔥 <strong>Your mission:</strong> Deploy an attack contract that predicts the roll before submitting the transaction — and only roll when the result equals the winning number.
+            </p>
+          </div>
+
+          {/* CONTRACT ADDRESSES */}
+          <div className="mt-10 space-y-6 text-lg">
+            <p>The smart contracts were successfully deployed on Sepolia:</p>
+
+              <p className="font-semibold">
+                DiceGame:{" "}
+                <Link
+                  href="https://sepolia.etherscan.io/address/0xF3AE4CC418223e902dAF667b462d38856b08F1E3"
+                  passHref
+                  className="link"
+                >
+                  0xF3AE4CC418223e902dAF667b462d38856b08F1E3
+                </Link>
+                <br />
+                AttackContract:{" "}
+                <Link
+                  href="https://sepolia.etherscan.io/address/0x7F96792aad28d8c432D3e7b1C3C52e3d6ED5DD9b"
+                  passHref
+                  className="link"
+                >
+                  0x7F96792aad28d8c432D3e7b1C3C52e3d6ED5DD9b
+                </Link>
+              </p>
+
+                  <p>
+                In this UI, you will be able to:
+                <br />
+                🎯 Compute future winning rolls  
+                🔍 View the current prize pool  
+                🧮 Predict block hashes  
+                🕹 Roll the dice only when profitable  
+                💥 Exploit the deterministic randomness safely
+              </p>
+
+              <p>
+                This challenge teaches how to exploit — and eventually defend
+                against —{" "}
+                <strong>blockhash-based randomness vulnerabilities</strong> used
+                in many older Ethereum contracts.
+              </p>
+
+              <p>
+                Build, break, exploit, learn — powered by{" "}
+                <strong>
+                  Scaffold-ETH 2, Next.js, Wagmi, RainbowKit, Viem, and Hardhat.
+                </strong>
+              </p>
+          </div>
+
+          <p className="text-center text-lg mt-16">
+              <a
+                href="https://speedrunethereum.com/challenge/dice-game"
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                SpeedRunEthereum.com
+              </a>
+            </p>
+          
         </div>
 
+        {/* FOOTER BLOCKS */}
         <div className="grow bg-base-300 w-full mt-16 px-8 py-12">
           <div className="flex justify-center items-center gap-12 flex-col md:flex-row">
             <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
               <BugAntIcon className="h-8 w-8 fill-secondary" />
               <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
+                Interact with your contracts using{" "}
+                <Link href="/debug" className="link">
                   Debug Contracts
-                </Link>{" "}
-                tab.
+                </Link>
+                .
               </p>
             </div>
+
             <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
               <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
               <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
+                Explore network activity in{" "}
+                <Link href="/blockexplorer" className="link">
                   Block Explorer
-                </Link>{" "}
-                tab.
+                </Link>
+                .
               </p>
             </div>
           </div>
